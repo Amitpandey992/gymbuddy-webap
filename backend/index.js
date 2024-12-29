@@ -7,10 +7,17 @@ import matchRequest from "./routes/matchRequest.routes.js";
 import { verifiedUser } from "./middlewares/verified.js";
 import profileView from "./routes/profileView.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
+import cors from "cors";
 
 const PORT = process.env.PORT || 5000;
 const app = express();
 
+app.use(
+  cors({
+    origin: "*",
+    credentials: true, 
+  })
+);
 //MIDDLEWARES
 app.use(express.json());
 

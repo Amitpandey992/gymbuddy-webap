@@ -5,6 +5,6 @@ import { verifiedUser } from "../middlewares/verified.js";
 const router = express.Router();
 
 //like route
-router.post("/like/:likedUserId", verifiedUser, like);
+router.post("/api/like/:likedUserId", verifiedUser, like);
 
 export default router;

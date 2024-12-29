@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema(
     },
     dateOfBirth: {
       type: Date,
-      required: true,
+      // required: true,
     },
     profilePicture: {
       type: String,
@@ -39,15 +39,15 @@ const userSchema = new mongoose.Schema(
     },
     profession: {
       type: String,
-      required: true,
+      // required: true,
     },
     city: {
       type: String,
-      required: true,
+      // required: true,
     },
     state: {
       type: String,
-      required: true,
+      // required: true,
     },
     matches: {
       type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
