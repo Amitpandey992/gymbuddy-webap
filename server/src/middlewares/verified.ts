@@ -1,10 +1,6 @@
+import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import User from "../models/user.model.js";
-import { NextFunction, Request, Response } from "express";
-
-interface JwtPayload {
-    id: string;
-}
+import User from "../models/user.model";
 
 declare global {
     namespace Express {
@@ -18,19 +14,28 @@ export const verifiedUser = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => {
-    const token = req.header("Authorization")?.replace("Bearer ", "");
+): Promise<void> => {
+    try {
+        const token = req.headers.authorization?.split(" ")[1];
+        if (!token) {
+            res.status(401).json({ message: "No token provided" });
+            return;
+        }
 
-    if (!token) {
-        return res.status(401).send("User not authenticated");
+        const decoded = jwt.verify(
+            token,
+            process.env.JWT_SECRET_KEY as string
+        ) as { id: string };
+        const user = await User.findById(decoded.id);
+
+        if (!user) {
+            res.status(401).json({ message: "User not found" });
+            return;
+        }
+
+        req.user = user;
+        next();
+    } catch (error) {
+        res.status(401).json({ message: "Invalid token" });
     }
-
-    const verified = jwt.verify(
-        token,
-        process.env.JWT_SECRET_KEY as string
-    ) as JwtPayload;
-    const user = await User.findById(verified.id);
-    if (!user) return res.status(401).send("User not authenticated");
-    req.user = user;
-    next();
 };

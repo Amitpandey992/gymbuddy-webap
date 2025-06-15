@@ -1,36 +1,42 @@
-import express from "express";
-import {
-    getAllUsers,
-    loginUser,
-    registerUser,
-    getFilteredUsers,
-    getUserProfile,
-    updateUserProfile,
-    saveFCMToken,
-} from "../controllers/user.controller.js";
-import { verifiedUser } from "./../middlewares/verified";
+import express, { RequestHandler } from "express";
+import { UserController } from "../controllers/user.controller";
+import { verifiedUser } from "../middlewares/verified";
+import User from "../models/user.model";
 
 const router = express.Router();
 
-// Register a new user
-router.post("/register", registerUser);
+router.post("/register", UserController.register as RequestHandler);
 
-// Login user
-router.post("/login", loginUser);
+router.post("/login", UserController.loginUser as RequestHandler);
 
-//user profile
-router.get("/profile", verifiedUser, getUserProfile);
+router.get(
+    "/allusers",
+    verifiedUser,
+    UserController.getAllUsers as RequestHandler
+);
 
-//update user profile
-router.patch("/profile", verifiedUser, updateUserProfile);
+router.get(
+    "/profile",
+    verifiedUser,
+    UserController.getUserProfile as RequestHandler
+);
 
-// Get all users
-router.get("/allusers", verifiedUser, getAllUsers);
+router.patch(
+    "/profile",
+    verifiedUser,
+    UserController.updateUserProfile as RequestHandler
+);
 
-// Get users with filters
-router.get("/search", verifiedUser, getFilteredUsers);
+router.get(
+    "/search",
+    verifiedUser,
+    UserController.getFilteredUsers as RequestHandler
+);
 
-// Save FCM token
-router.post("/save-fcm-token", verifiedUser, saveFCMToken);
+router.post(
+    "/save-fcm-token",
+    verifiedUser,
+    UserController.saveFCMToken as RequestHandler
+);
 
 export default router;

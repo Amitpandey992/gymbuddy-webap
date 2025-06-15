@@ -30,3 +30,18 @@ export type signupResponse = {
   state: string;
   token: string;
 };
+
+export type loginResponse = {
+  id: string;
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  gender: string;
+  dateOfBirth: Date;
+  profilePicture: string | null;
+  profession: string;
+  city: string;
+  state: string;
+  token: string;
+};
+
