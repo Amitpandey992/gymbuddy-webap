@@ -11,9 +11,26 @@ import { useAppContext } from "./contexts/AppContext";
 import Layout from "./Layout";
 import Profile from "./pages/Profile";
 import SignUp from "./pages/Signup";
+import axiosInstance from "./shared/interceptor";
+import { requestPermissionAndGetToken } from "./firebase.messaging";
 
 function App() {
   const { user, setUser, accessToken, fetchUserProfile } = useAppContext();
+
+  useEffect(() => {
+    const registerFCMToken = async () => {
+      const token = await requestPermissionAndGetToken();
+
+      if (token) {
+        await axiosInstance.post("/save-fcm-token", {
+          userId: user?.id,
+          fcmToken: token,
+        });
+      }
+    };
+
+    registerFCMToken();
+  }, []);
 
   useEffect(() => {
     if (accessToken && !user) {
@@ -35,7 +52,6 @@ function App() {
             <Route path="/login" element={<Navigate to="/" replace />} />
             <Route path="/signup" element={<Navigate to="/" replace />} />
             {/* <Route path="/membership" element={<Membership />} /> */}
-           
           </>
         ) : (
           <>

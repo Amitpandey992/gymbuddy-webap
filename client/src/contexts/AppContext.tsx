@@ -5,13 +5,12 @@ import React, {
   ReactNode,
   useContext,
 } from "react";
-import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
+import axiosInstance from "@/shared/interceptor";
 
 interface User {
   id: string;
   name: string;
   email: string;
-  // Add other user properties as needed
 }
 
 interface AppContextProps {
@@ -38,23 +37,6 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({
     localStorage.getItem("accessToken")
   );
   const [user, setUser] = useState<User | null>(null);
-
-  const axiosInstance: AxiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_BASE_URL,
-  });
-
-  axiosInstance.interceptors.request.use(
-    (config: InternalAxiosRequestConfig) => {
-      const token = localStorage.getItem("accessToken");
-      if (token && config.headers) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-      return config;
-    },
-    (error: any) => {
-      return Promise.reject(error);
-    }
-  );
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -162,11 +144,11 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({
 };
 
 const useAppContext = (): AppContextProps => {
-    const context = useContext(AppContext);
-    if (!context) {
-      throw new Error("useAppContext must be used within an AppContextProvider");
-    }
-    return context;
-  };
-  
-  export { AppContextProvider, useAppContext };
+  const context = useContext(AppContext);
+  if (!context) {
+    throw new Error("useAppContext must be used within an AppContextProvider");
+  }
+  return context;
+};
+
+export { AppContextProvider, useAppContext };
