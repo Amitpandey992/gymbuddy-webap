@@ -1,6 +1,6 @@
 import express from 'express';
 import adminRoutes from './admin.routes.js';
-import matchRequest from './matchRequest.routes.js';
+import matchRequest from './match.routes.js';
 import profileView from './profileView.routes.js';
 import userRoutes from './user.routes.js';
 

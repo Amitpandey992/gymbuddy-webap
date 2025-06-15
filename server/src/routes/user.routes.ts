@@ -1,16 +1,16 @@
 import express from "express";
 import {
-  getAllUsers,
-  loginUser,
-  registerUser,
-  getFilteredUsers,
-  getUserProfile,
-  updateUserProfile,
+    getAllUsers,
+    loginUser,
+    registerUser,
+    getFilteredUsers,
+    getUserProfile,
+    updateUserProfile,
+    saveFCMToken,
 } from "../controllers/user.controller.js";
-import { verifiedUser } from "../middlewares/verified.js";
+import { verifiedUser } from "./../middlewares/verified";
 
 const router = express.Router();
-router.get("/test", (req, res) => res.send("User route works"));
 
 // Register a new user
 router.post("/register", registerUser);
@@ -29,5 +29,8 @@ router.get("/allusers", verifiedUser, getAllUsers);
 
 // Get users with filters
 router.get("/search", verifiedUser, getFilteredUsers);
+
+// Save FCM token
+router.post("/save-fcm-token", verifiedUser, saveFCMToken);
 
 export default router;
