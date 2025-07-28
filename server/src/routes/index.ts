@@ -1,12 +1,12 @@
 import express from 'express';
 import adminRoutes from './admin.routes.js';
-import matchRequest from './match.routes.js';
+import Match from './match.routes.js';
 import profileView from './profileView.routes.js';
 import userRoutes from './user.routes.js';
 
 const router = express.Router();
 
-router.use('/match', matchRequest);
+router.use('/match', Match);
 router.use('/profile', profileView);
 router.use('/user', userRoutes);
 router.use('/admin', adminRoutes);

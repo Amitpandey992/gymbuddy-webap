@@ -3,11 +3,6 @@ import { Request, Response } from "express";
 import { UserService } from "../services/user.service.js";
 
 export class UserController {
-    static async register(req: Request, res: Response): Promise<void> {
-        const result = await UserService.registerUser(req.body);
-        res.status(result.success ? 200 : 404).json(result);
-    }
-
     static async loginUser(req: Request, res: Response): Promise<void> {
         const result = await UserService.loginUser(
             req.body.email,
@@ -16,36 +11,79 @@ export class UserController {
         res.status(result.success ? 200 : 404).json(result);
     }
 
-    static async getAllUsers(req: Request, res: Response): Promise<void> {
-        const result = await UserService.getAllUser(req.user);
+    static async sendOtp(req: Request, res: Response) {
+        const { email } = req.body;
+        const result = await UserService.sendOtpForVerification(email);
+        res.status(result.success ? 200 : 404).json(result);
+    }
+
+    static async verifyOtp(req: Request, res: Response) {
+        const { email, otp } = req.body;
+        const result = await UserService.verifyOtp(email, otp);
+        res.status(result.success ? 200 : 404).json(result);
+    }
+
+    static async userRegistrationWithNamePassword(req: Request, res: Response) {
+        const { fullName, password } = req.body;
+
+        const authHeader = req.headers.authorization as string;
+        const token = authHeader?.replace("Bearer ", "");
+
+        const result = await UserService.registerUserWithUserNameAndPassword(
+            {
+                fullName,
+                password,
+            },
+            token
+        );
+
+        res.status(result.success ? 200 : 400).json(result);
+    }
+
+    static async completeProfileRegistration(req: Request, res: Response) {
+        const authHeader = req.headers.authorization as string;
+        const token = authHeader?.replace("Bearer ", "");
+        
+        
+        const uploadedFile = req.file;
+        
+        const result = await UserService.completeUserRegistration(
+            {
+                ...req.body,
+                profilePicture: uploadedFile ? uploadedFile.path : req.body.profilePicture
+            },
+            token
+        );
+        
+       
+        if (!result.success && uploadedFile) {
+            const fs = require('fs');
+            try {
+                fs.unlinkSync(uploadedFile.path);
+                console.log('Uploaded file deleted due to registration failure');
+            } catch (error) {
+                console.error('Error deleting uploaded file:', error);
+            }
+        }
+        
+        res.status(result.success ? 200 : 404).json(result);
+    }
+
+    static async getAllCoUsers(req: Request, res: Response): Promise<void> {
+        const result = await UserService.getAllCoUser(req.user);
         res.status(result.success ? 200 : 404).json(result);
     }
 
     static async getFilteredUsers(req: Request, res: Response): Promise<void> {
-        const { minAge, maxAge, city, state } = req.query;
-        let filters: any = {};
-        if (city) filters.city = city;
-        if (state) filters.state = state;
-        if (minAge || maxAge) {
-            const currentYear = new Date().getFullYear();
-            if (minAge) {
-                filters.dateOfBirth = {
-                    ...filters.dateOfBirth,
-                    $lte: new Date(`${currentYear - Number(minAge)}-12-31`),
-                };
-            }
-            if (maxAge) {
-                filters.dateOfBirth = {
-                    ...filters.dateOfBirth,
-                    $gte: new Date(`${currentYear - Number(maxAge)}-01-01`),
-                };
-            }
-        }
-        const users = await User.find(filters);
-        res.status(200).json({
-            message: "Users fetched successfully",
-            data: users,
-        });
+        const { minAge, maxAge, city, state } = req?.query;
+
+        const result = await UserService.filterUsers(
+            Number(minAge),
+            Number(maxAge),
+            String(city),
+            String(state)
+        );
+        res.status(result.success ? 200 : 404).json(result);
     }
 
     static async getUserProfile(req: Request, res: Response): Promise<void> {

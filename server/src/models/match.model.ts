@@ -21,6 +21,6 @@ const matchRequestSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-const MatchRequest = mongoose.model("MatchRequest", matchRequestSchema);
+const Match = mongoose.model("Match", matchRequestSchema);
 
-export default MatchRequest;
+export default Match;

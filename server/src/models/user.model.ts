@@ -4,7 +4,7 @@ const userSchema = new mongoose.Schema(
     {
         fullName: {
             type: String,
-            required: true,
+            default: null,
         },
         email: {
             type: String,
@@ -13,55 +13,82 @@ const userSchema = new mongoose.Schema(
         },
         password: {
             type: String,
-            required: true,
+            // required: true,
             min: 8,
             max: 15,
         },
         phoneNumber: {
             type: Number,
-            required: true,
+            // required: true,
             unique: true,
             minLength: 10,
             maxLength: 10,
         },
         gender: {
             type: String,
-            required: true,
+            // required: true,
             enum: ["male", "female", "other"],
         },
         dateOfBirth: {
             type: Date,
-            required: true,
+            // required: true,
         },
         profilePicture: {
             type: String,
-            required: true,
+            // required: false,
         },
         profession: {
             type: String,
-            required: true,
+            // required: true,
         },
         city: {
             type: String,
-            required: true,
+            // required: true,
         },
         state: {
             type: String,
-            required: true,
+            // required: true,
+        },
+        latitude: {
+            type: Number,
+            required: false,
+        },
+        longitude: {
+            type: Number,
+            required: false,
         },
         matches: {
-            type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+            type: [
+                {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "Match",
+                },
+            ],
             default: [],
         },
         sentRequests: {
-            type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+            type: [
+                {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "User",
+                },
+            ],
             default: [],
         },
         receivedRequests: {
-            type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+            type: [
+                {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "User",
+                },
+            ],
             default: [],
         },
         isPremium: {
+            type: Boolean,
+            default: false,
+        },
+        isVerified: {
             type: Boolean,
             default: false,
         },
