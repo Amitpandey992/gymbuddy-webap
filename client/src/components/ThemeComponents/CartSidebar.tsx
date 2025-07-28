@@ -56,7 +56,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isVisible, onClose }) => {
                     </button>
                 </div>
 
-                {/* Cart Content */}
+                {/* Cart's Content */}
                 <div className="p-4">
                     <div className="flex justify-between items-center mb-4">
                         <h4 className="text-lg font-semibold text-gray-800">
